@@ -3,17 +3,24 @@ package com.driver;
 public class CurrentAccount extends BankAccount{
     String tradeLicenseId; //consists of Uppercase English characters only
 
+     public String getTradeLicenseId() {
+        return tradeLicenseId;
+    }
+
+    public void setTradeLicenseId(String tradeLicenseId) {
+        this.tradeLicenseId = tradeLicenseId;
+    }
+
+
     public CurrentAccount(String name, double balance, String tradeLicenseId) throws Exception {
         // minimum balance is 5000 by default. If balance is less than 5000, throw "Insufficient Balance" exception
 
-        super(name,balance,5000);
-        // this.balance = balance;
-        // this.name = name;
-        // this. tradeLicenseId = tradeLicenseId ;
-
-         if(balance <5000){
-            throw new RuntimeException("Insufficient Balance");
-          }
+        super(name,balance);
+        this.tradeLicenseId=tradeLicenseId;
+        setMinBalance(5000);
+        if (balance<getMinBalance()){
+            throw  new minbalException("Insufficient Balance");
+        }
 
     }
 
@@ -23,70 +30,24 @@ public class CurrentAccount extends BankAccount{
         // If the characters of the license Id can be rearranged to create any valid license Id
         // If it is not possible, throw "Valid License can not be generated" Exception
 
-        int n=tradeLicenseId.length();
-        int temp=0;
-
-         for(int i=0;i<n-1;i++){
-            if(tradeLicenseId.charAt(i)==tradeLicenseId.charAt(i+1)){
-          
-                break;  
-             }else{
-                temp++;
-            }
-         }
-             if(temp==n-1){
-                return ;
-            }
-        int freq[]=new int[26];
-       for(int i=0;i<n;i++){
-            int index=(tradeLicenseId.charAt(i))-'A';
-            freq[index]++;
+        char[]ch=tradeLicenseId.toCharArray();
+        boolean f=false;
+       for(int i=0;i<ch.length-1;i++){
+           if(ch[i]==ch[i+1]){
+               f=true;
+               break;
+           }
        }
 
-      int max=0,letter=0;
-    for(int i=0;i<26;i++){
-        if(max<freq[i]){
-            max=freq[i];
-            letter=i;
-        }
-    }
-       
-    if(max>(n+1)/2){
-     throw new RuntimeException("Valid License can not be generated");
-    }
 
-    char ch[]=new char[n];
-    for(int i=0;i<n;i+=2){
-        if(freq[letter]>0){
-           ch[i]=(char)(letter+'A');
-           freq[letter]--;
-        }else{
-            for(int j=0;j<26;j++){
-                if(freq[j]>0){
-                    letter=j;
-                    break;
-                }
-            }
-           ch[i]=(char)(letter+'A');
-           freq[letter]--; 
-        }
-     }
-    for(int i=1;i<n;i+=2){
-        if(freq[letter]>0){
-           ch[i]=(char)(letter+'A');
-           freq[letter]--;
-        }else{
-            for(int j=0;j<26;j++){
-                if(freq[j]>0){
-                    letter=j;
-                    break;
-                }
-            }
-           ch[i]=(char)(letter+'A');
-           freq[letter]--; 
-        }
-     }
-      this.tradeLicenseId=String.valueOf(ch);
+        if(f){
+           solution obj=new solution();
+           String str= obj.rearrange(this.tradeLicenseId);
+           if(str==""){
+               throw new exceptions("Valid License can not be generated");
+           }
+           this.tradeLicenseId=str;
+       }
 
 
 
